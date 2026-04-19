@@ -1,124 +1,136 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طقس كفر البطيخ</title>
 
-<title>طقس كفر البطيخ</title>
+    <!-- PWA - مهم جداً يكون هنا في الـ head -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1e88e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-<!-- Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-    background: linear-gradient(to bottom, #87CEEB, #1E90FF);
-    color: white;
-}
-
-#map {
-    height: 60vh;
-    width: 90%;
-    margin: auto;
-    border-radius: 10px;
-}
-
-.weather-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.card {
-    background: rgba(0,0,0,0.6);
-    padding: 10px;
-    border-radius: 10px;
-}
-</style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom, #87CEEB, #1E90FF);
+            color: white;
+            margin: 0;
+            padding: 10px;
+        }
+        h2 {
+            margin: 15px 0;
+        }
+        #map {
+            height: 55vh;
+            width: 95%;
+            max-width: 900px;
+            margin: 15px auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .weather-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .card {
+            background: rgba(0, 0, 0, 0.65);
+            padding: 15px 10px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .card h3 {
+            margin: 5px 0 8px 0;
+            font-size: 1.1em;
+        }
+        .card i {
+            margin-left: 8px;
+        }
+    </style>
 </head>
-
 <body>
+    <h2>طقس مركز كفر البطيخ - محافظة دمياط</h2>
+    <div id="map"></div>
+    <div class="weather-cards" id="weather-cards"></div>
 
-<h2>طقس مركز كفر البطيخ - محافظة دمياط</h2>
-
-<div id="map"></div>
-<div class="weather-cards" id="weather-cards"></div>
-
-<script>
-var map = L.map('map', {
-    maxBounds: [[30.9, 30.8], [31.6, 32.1]],
-    maxBoundsViscosity: 1.0
-}).setView([31.35, 31.28], 11);
-
-L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png').addTo(map);
-
-var marker = L.marker([31.35, 31.28]).addTo(map);
-
-function generateRandom(min, max) {
-    return (Math.random() * (max - min) + min).toFixed(2);
-}
-
-function updateData(lat, lon) {
-    var now = new Date();
-
-    var data = [
-        { label: "خط الطول", value: lon.toFixed(5), icon: "fa-map-marker-alt" },
-        { label: "دائرة العرض", value: lat.toFixed(5), icon: "fa-map-marker" },
-        { label: "الوقت", value: now.toLocaleTimeString('ar-EG'), icon: "fa-clock" },
-
-        { label: "زاوية السقوط", value: generateRandom(20, 85) + "°", icon: "fa-sun" },
-        { label: "الإشعاع الشمسي", value: generateRandom(200, 900) + " W/m²", icon: "fa-lightbulb" },
-
-        { label: "درجة الحرارة", value: generateRandom(18, 32) + "°C", icon: "fa-thermometer-half" },
-
-        { label: "التبخر اليومي", value: generateRandom(0.1, 0.5) + " mm", icon: "fa-water" },
-
-        { label: "هطول المطر", value: generateRandom(0, 2) + " mm", icon: "fa-cloud-rain" },
-
-        { label: "الضغط الجوي", value: generateRandom(1005, 1020) + " hPa", icon: "fa-weight" },
-
-        { label: "الأشعة فوق البنفسجية", value: generateRandom(1, 7), icon: "fa-radiation" },
-
-        { label: "سرعة الرياح", value: generateRandom(2, 10) + " m/s", icon: "fa-wind" },
-
-        { label: "اتجاه الرياح", value: ["شمال", "شمال غربي", "غرب", "شمال شرقي"][Math.floor(Math.random()*4)], icon: "fa-compass" }
-    ];
-
-    var cardsContainer = document.getElementById("weather-cards");
-    cardsContainer.innerHTML = "";
-
-    data.forEach(item => {
-        let card = document.createElement("div");
-        card.classList.add("card");
-        card.innerHTML = `<h3><i class="fa ${item.icon}"></i> ${item.label}</h3><p>${item.value}</p>`;
-        cardsContainer.appendChild(card);
-    });
-
-    marker.setLatLng([lat, lon]);
-}
-
-map.on('click', function (e) {
-    updateData(e.latlng.lat, e.latlng.lng);
-});
-
-updateData(31.35, 31.28);
-</script>
-<!-- PWA -->
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#1e88e5">
-<meta name="apple-mobile-web-app-capable" content="yes">
     <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(() => console.log('Service Worker Registered'))
-    .catch(err => console.log('Error', err));
-}
-</script>
+        // خريطة Leaflet
+        var map = L.map('map', {
+            maxBounds: [[30.9, 30.8], [31.6, 32.1]],
+            maxBoundsViscosity: 1.0
+        }).setView([31.35, 31.28], 11);
+
+        L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png').addTo(map);
+
+        var marker = L.marker([31.35, 31.28]).addTo(map);
+
+        function generateRandom(min, max) {
+            return (Math.random() * (max - min) + min).toFixed(2);
+        }
+
+        function updateData(lat, lon) {
+            var now = new Date();
+            var data = [
+                { label: "خط الطول", value: lon.toFixed(5), icon: "fa-map-marker-alt" },
+                { label: "دائرة العرض", value: lat.toFixed(5), icon: "fa-map-marker" },
+                { label: "الوقت", value: now.toLocaleTimeString('ar-EG'), icon: "fa-clock" },
+                { label: "زاوية السقوط", value: generateRandom(20, 85) + "°", icon: "fa-sun" },
+                { label: "الإشعاع الشمسي", value: generateRandom(200, 900) + " W/m²", icon: "fa-lightbulb" },
+                { label: "درجة الحرارة", value: generateRandom(18, 32) + "°C", icon: "fa-thermometer-half" },
+                { label: "التبخر اليومي", value: generateRandom(0.1, 0.5) + " mm", icon: "fa-water" },
+                { label: "هطول المطر", value: generateRandom(0, 2) + " mm", icon: "fa-cloud-rain" },
+                { label: "الضغط الجوي", value: generateRandom(1005, 1020) + " hPa", icon: "fa-weight" },
+                { label: "الأشعة فوق البنفسجية", value: generateRandom(1, 7), icon: "fa-radiation" },
+                { label: "سرعة الرياح", value: generateRandom(2, 10) + " m/s", icon: "fa-wind" },
+                { label: "اتجاه الرياح", value: ["شمال", "شمال غربي", "غرب", "شمال شرقي"][Math.floor(Math.random()*4)], icon: "fa-compass" }
+            ];
+
+            var cardsContainer = document.getElementById("weather-cards");
+            cardsContainer.innerHTML = "";
+
+            data.forEach(item => {
+                let card = document.createElement("div");
+                card.classList.add("card");
+                card.innerHTML = `
+                    <h3><i class="fa ${item.icon}"></i> ${item.label}</h3>
+                    <p>${item.value}</p>
+                `;
+                cardsContainer.appendChild(card);
+            });
+
+            marker.setLatLng([lat, lon]);
+        }
+
+        // عند الضغط على الخريطة
+        map.on('click', function (e) {
+            updateData(e.latlng.lat, e.latlng.lng);
+        });
+
+        // تحميل البيانات الأولية
+        updateData(31.35, 31.28);
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('✅ Service Worker Registered Successfully'))
+                .catch(err => console.log('❌ Service Worker Error:', err));
+        }
+    </script>
 </body>
 </html>
