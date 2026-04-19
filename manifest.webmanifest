@@ -1,1 +1,21 @@
-
+{
+  "name": "طقس كفر البطيخ",
+  "short_name": "طقس كفر البطيخ",
+  "description": "تطبيق الطقس لكفر البطيخ - دمياط",
+  "start_url": "/kafr-el-bateekh-weather/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e88e5",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
