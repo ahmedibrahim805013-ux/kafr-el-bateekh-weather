@@ -1,11 +1,12 @@
 {
   "name": "طقس كفر البطيخ",
   "short_name": "طقس كفر البطيخ",
-  "description": "تطبيق الطقس لكفر البطيخ - دمياط",
+  "description": "تطبيق طقس تفاعلي لمركز كفر البطيخ - محافظة دمياط",
   "start_url": "/kafr-el-bateekh-weather/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1e88e5",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
